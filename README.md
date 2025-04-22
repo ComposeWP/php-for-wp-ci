@@ -1,3 +1,5 @@
+# PS: Dont use it for anything, it still in development, is not meant for use
+
 # Minimal PHP Docker Images for WordPress Development
 
 This repository provides lightweight PHP-FPM images with all the essential extensions required to run WordPress and most plugins/themes — built using official `php:<version>-fpm-alpine` base images.
