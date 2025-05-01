@@ -1,13 +1,19 @@
 FROM php:8.2.28-fpm-alpine3.21
 
+# Install runtime dependencies
 RUN apk add --no-cache \
     git curl mariadb-client \
-    libzip-dev \
-    libjpeg-turbo-dev libpng-dev freetype-dev libwebp-dev \
-    icu-dev libxml2-dev oniguruma-dev zlib-dev \
-    && docker-php-ext-configure gd \
-    --with-freetype \
-    --with-jpeg \
-    --with-webp \
+    ghostscript \
+    libzip icu zlib oniguruma libxml2 openssl \
+    libheif libavif \
+    imagemagick imagemagick-libs
+
+# Build & install missing PHP extensions + PECL extensions
+RUN apk add --no-cache --virtual .build-deps \
+    autoconf g++ make \
+    libzip-dev icu-dev libxml2-dev oniguruma-dev zlib-dev imagemagick-dev libheif-dev libavif-dev \
+    && pecl install imagick igbinary timezonedb \
+    && docker-php-ext-enable imagick igbinary timezonedb \
     && docker-php-ext-install \
-    gd mysqli pdo pdo_mysql zip exif intl
+    mysqli pdo pdo_mysql zip exif intl bcmath shmop \
+    && apk del .build-deps
